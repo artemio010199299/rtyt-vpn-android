@@ -2,8 +2,10 @@
     <application
         android:theme="@style/AppTheme"
         android:label="RTYT VPN"
+        android:icon="@drawable/rtyt_logo"
         android:allowBackup="false"
         android:supportsRtl="true">
+
         <activity
             android:name=".MainActivity"
             android:exported="true">
