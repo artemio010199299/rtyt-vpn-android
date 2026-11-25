@@ -11,6 +11,7 @@ import android.widget.*
 import android.graphics.Typeface
 
 class MainActivity : Activity() {
+
     private val servers = listOf(
         "🇳🇱 Netherlands — Best",
         "🇷🇺 Russia",
@@ -26,6 +27,7 @@ class MainActivity : Activity() {
 
     private lateinit var status: TextView
     private lateinit var imported: TextView
+
     private val blue = Color.rgb(56, 189, 248)
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -41,6 +43,7 @@ class MainActivity : Activity() {
         }
 
         val scroll = ScrollView(this)
+
         val content = LinearLayout(this).apply {
             orientation = LinearLayout.VERTICAL
             gravity = Gravity.CENTER_HORIZONTAL
@@ -51,36 +54,48 @@ class MainActivity : Activity() {
             LinearLayout.LayoutParams(190, 150)
         )
 
-        content.addView(label("RTYT VPN", 30, Color.WHITE, true))
-        content.addView(label("PRIVATE CONNECTION", 12, blue, true).apply {
-            setPadding(0, 2, 0, 22)
-        })
+        content.addView(
+            label("RTYT VPN", 30, Color.WHITE, true)
+        )
+
+        content.addView(
+            label("PRIVATE CONNECTION", 12, blue, true).apply {
+                setPadding(0, 2, 0, 22)
+            }
+        )
 
         status = label("NOT CONNECTED", 13, Color.LTGRAY, true)
         content.addView(status)
 
         val connect = button("CONNECT", blue)
+
         connect.setOnClickListener {
             status.text = "ENGINE NOT CONFIGURED"
+
             Toast.makeText(
                 this,
                 "VPN engine is not configured yet.",
                 Toast.LENGTH_LONG
             ).show()
         }
+
         content.addView(connect, matchWrap())
 
-        content.addView(label("SELECT SERVER", 14, blue, true).apply {
-            gravity = Gravity.START
-            setPadding(0, 26, 0, 8)
-        })
+        content.addView(
+            label("SELECT SERVER", 14, blue, true).apply {
+                gravity = Gravity.START
+                setPadding(0, 26, 0, 8)
+            }
+        )
 
         val spinner = Spinner(this)
+
         spinner.adapter = ArrayAdapter(
             this,
             android.R.layout.simple_spinner_dropdown_item,
             servers
         )
+
         content.addView(spinner, matchWrap())
 
         val importButton = button(
@@ -93,16 +108,29 @@ class MainActivity : Activity() {
                 addCategory(Intent.CATEGORY_OPENABLE)
                 type = "*/*"
             }
+
             startActivityForResult(intent, 42)
         }
+
         content.addView(importButton, matchWrap())
 
-        imported = label("No configuration imported", 12, Color.LTGRAY, false)
+        imported = label(
+            "No configuration imported",
+            12,
+            Color.LTGRAY,
+            false
+        )
+
         imported.setPadding(0, 12, 0, 8)
         content.addView(imported)
 
         content.addView(
-            label("RTYT VPN • Android preview 0.1.0", 11, Color.GRAY, false)
+            label(
+                "RTYT VPN • Android preview 0.1.0",
+                11,
+                Color.GRAY,
+                false
+            )
         )
 
         scroll.addView(content)
@@ -117,9 +145,13 @@ class MainActivity : Activity() {
     ) {
         super.onActivityResult(requestCode, resultCode, data)
 
-        if (requestCode == 42 && resultCode == Activity.RESULT_OK) {
+        if (requestCode == 42 &&
+            resultCode == Activity.RESULT_OK
+        ) {
             val uri: Uri = data?.data ?: return
-            imported.text = "Selected: ${uri.lastPathSegment ?: "configuration file"}"
+
+            imported.text =
+                "Selected: ${uri.lastPathSegment ?: "configuration file"}"
         }
     }
 
@@ -128,26 +160,38 @@ class MainActivity : Activity() {
         size: Int,
         color: Int,
         bold: Boolean
-    ) = TextView(this).apply {
-        this.text = text
-        textSize = size.toFloat()
-        setTextColor(color)
-        gravity = Gravity.CENTER
-        if (bold) setTypeface(typeface, Typeface.BOLD)
+    ): TextView {
+        return TextView(this).apply {
+            this.text = text
+            textSize = size.toFloat()
+            setTextColor(color)
+            gravity = Gravity.CENTER
+
+            if (bold) {
+                setTypeface(typeface, Typeface.BOLD)
+            }
+        }
     }
 
-    private fun button(text: String, color: Int) = Button(this).apply {
-        this.text = text
-        setTextColor(Color.WHITE)
-        textSize = 13f
-        isAllCaps = false
-        setBackgroundColor(color)
+    private fun button(
+        text: String,
+        color: Int
+    ): Button {
+        return Button(this).apply {
+            this.text = text
+            setTextColor(Color.WHITE)
+            textSize = 13f
+            isAllCaps = false
+            setBackgroundColor(color)
+        }
     }
 
-    private fun matchWrap() = LinearLayout.LayoutParams(
-        LinearLayout.LayoutParams.MATCH_PARENT,
-        LinearLayout.LayoutParams.WRAP_CONTENT
-    ).apply {
-        topMargin = 10
+    private fun matchWrap(): LinearLayout.LayoutParams {
+        return LinearLayout.LayoutParams(
+            LinearLayout.LayoutParams.MATCH_PARENT,
+            LinearLayout.LayoutParams.WRAP_CONTENT
+        ).apply {
+            topMargin = 10
+        }
     }
 }
