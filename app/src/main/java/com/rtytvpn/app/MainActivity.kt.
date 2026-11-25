@@ -3,187 +3,42 @@ package com.rtytvpn.app
 
 import android.app.Activity
 import android.os.Bundle
-import android.content.Intent
-import android.net.Uri
 import android.graphics.Color
 import android.view.Gravity
-import android.widget.*
-import android.graphics.Typeface
+import android.widget.LinearLayout
+import android.widget.TextView
 
 class MainActivity : Activity() {
-
-    private val servers = listOf(
-        "🇳🇱 Netherlands — Best",
-        "🇷🇺 Russia",
-        "🇦🇹 Austria",
-        "🇵🇱 Poland",
-        "🇬🇪 Georgia",
-        "🇸🇪 Sweden",
-        "🇫🇷 France",
-        "🇧🇬 Bulgaria",
-        "🇺🇸 YouTube",
-        "🇷🇺 LTE • Bypass"
-    )
-
-    private lateinit var status: TextView
-    private lateinit var imported: TextView
-
-    private val blue = Color.rgb(56, 189, 248)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        try {
-            window.statusBarColor = Color.rgb(7, 11, 20)
-            window.navigationBarColor = Color.rgb(7, 11, 20)
+        window.statusBarColor = Color.rgb(7, 11, 20)
+        window.navigationBarColor = Color.rgb(7, 11, 20)
 
-            val root = LinearLayout(this).apply {
-                orientation = LinearLayout.VERTICAL
-                setPadding(24, 22, 24, 24)
-                setBackgroundColor(Color.rgb(7, 11, 20))
-            }
-
-            val scroll = ScrollView(this)
-
-            val content = LinearLayout(this).apply {
-                orientation = LinearLayout.VERTICAL
-                gravity = Gravity.CENTER_HORIZONTAL
-            }
-
-            content.addView(
-                label("RTYT", 36, blue, true),
-                LinearLayout.LayoutParams(190, 150)
-            )
-
-            content.addView(label("RTYT VPN", 30, Color.WHITE, true))
-            content.addView(label("PRIVATE CONNECTION", 12, blue, true))
-
-            status = label("NOT CONNECTED", 13, Color.LTGRAY, true)
-            content.addView(status)
-
-            val connect = button("CONNECT", blue)
-            connect.setOnClickListener {
-                status.text = "ENGINE NOT CONFIGURED"
-                Toast.makeText(
-                    this,
-                    "VPN engine is not configured yet.",
-                    Toast.LENGTH_LONG
-                ).show()
-            }
-            content.addView(connect, matchWrap())
-
-            content.addView(
-                label("SELECT SERVER", 14, blue, true).apply {
-                    gravity = Gravity.START
-                    setPadding(0, 26, 0, 8)
-                }
-            )
-
-            val spinner = Spinner(this)
-            spinner.adapter = ArrayAdapter(
-                this,
-                android.R.layout.simple_spinner_dropdown_item,
-                servers
-            )
-            content.addView(spinner, matchWrap())
-
-            val importButton = button(
-                "IMPORT SUBSCRIPTION / CONFIG",
-                Color.rgb(24, 38, 58)
-            )
-
-            importButton.setOnClickListener {
-                try {
-                    val intent = Intent(Intent.ACTION_OPEN_DOCUMENT).apply {
-                        addCategory(Intent.CATEGORY_OPENABLE)
-                        type = "*/*"
-                    }
-                    startActivityForResult(intent, 42)
-                } catch (e: Exception) {
-                    showError(e)
-                }
-            }
-
-            content.addView(importButton, matchWrap())
-
-            imported = label(
-                "No configuration imported",
-                12,
-                Color.LTGRAY,
-                false
-            )
-            imported.setPadding(0, 12, 0, 8)
-            content.addView(imported)
-
-            content.addView(
-                label("RTYT VPN • Android preview 0.1.0", 11, Color.GRAY, false)
-            )
-
-            scroll.addView(content)
-            root.addView(scroll)
-            setContentView(root)
-
-        } catch (e: Exception) {
-            showError(e)
-        }
-    }
-
-    private fun showError(e: Exception) {
-        val error = TextView(this).apply {
-            text = "RTYT VPN ERROR:\n${e.javaClass.simpleName}\n${e.message}"
-            textSize = 16f
-            setTextColor(Color.WHITE)
-            setPadding(24, 24, 24, 24)
+        val screen = LinearLayout(this).apply {
+            orientation = LinearLayout.VERTICAL
+            gravity = Gravity.CENTER
             setBackgroundColor(Color.rgb(7, 11, 20))
         }
-        setContentView(error)
-    }
 
-    override fun onActivityResult(
-        requestCode: Int,
-        resultCode: Int,
-        data: Intent?
-    ) {
-        super.onActivityResult(requestCode, resultCode, data)
-
-        if (requestCode == 42 && resultCode == Activity.RESULT_OK) {
-            val uri: Uri = data?.data ?: return
-            imported.text =
-                "Selected: ${uri.lastPathSegment ?: "configuration file"}"
-        }
-    }
-
-    private fun label(
-        text: String,
-        size: Int,
-        color: Int,
-        bold: Boolean
-    ): TextView {
-        return TextView(this).apply {
-            this.text = text
-            textSize = size.toFloat()
-            setTextColor(color)
+        val title = TextView(this).apply {
+            text = "RTYT VPN"
+            textSize = 34f
+            setTextColor(Color.rgb(56, 189, 248))
             gravity = Gravity.CENTER
-            if (bold) setTypeface(typeface, Typeface.BOLD)
         }
-    }
 
-    private fun button(text: String, color: Int): Button {
-        return Button(this).apply {
-            this.text = text
+        val subtitle = TextView(this).apply {
+            text = "PRIVATE CONNECTION"
+            textSize = 14f
             setTextColor(Color.WHITE)
-            textSize = 13f
-            isAllCaps = false
-            setBackgroundColor(color)
+            gravity = Gravity.CENTER
         }
-    }
 
-    private fun matchWrap(): LinearLayout.LayoutParams {
-        return LinearLayout.LayoutParams(
-            LinearLayout.LayoutParams.MATCH_PARENT,
-            LinearLayout.LayoutParams.WRAP_CONTENT
-        ).apply {
-            topMargin = 10
-        }
+        screen.addView(title)
+        screen.addView(subtitle)
+
+        setContentView(screen)
     }
 }
